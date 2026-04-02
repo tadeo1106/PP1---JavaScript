@@ -15,9 +15,10 @@ if (nombre === "") {
         console.log("La contraseña debe tener mínimo 6 caracteres.");    
     }
 
+    edad+=10
 
     
-    console.log(`Tu nombre es ${nombre} y tu edad en diez años sería ${edad + 10}.`);
+    console.log(`Tu nombre es ${nombre} y tu edad en diez años sería ${edad}.`);
 }
 
 
