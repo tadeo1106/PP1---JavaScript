@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <title>Barbería - Turnos</title>
+</head>
+<body class="flex items-start justify-center mt-52 bg-slate-100 gap-2">
+
+    <div class="bg-slate-400 shadow-sm shadow-black w-96 rounded-md pb-4">
+        <h3 class="p-6 text-center font-mono text-xl font-bold text-slate-900 border-b border-slate-500 mb-4"> 
+            MIS TURNOS 
+        </h3>
+
+    <div class="px-6 mb-4 flex gap-2">
+            <input type="number" id="input-buscar-id" placeholder="Buscar por ID..." class="w-full border border-slate-300 rounded p-2 text-sm focus:outline-none focus:border-slate-500 font-mono ">
+            
+            <button onclick="buscar()" class="bg-slate-800 text-white font-bold py-2 px-3 rounded hover:bg-slate-700 transition-colors text-sm cursor-pointer">
+                Buscar
+            </button>
+            
+            <button onclick="limpiarBuscador()" class="bg-slate-500 text-white font-bold py-2 px-3 rounded hover:bg-slate-600 transition-colors text-sm cursor-pointer">
+                Ver Todos
+            </button>
+        </div>
+
+        <div id="contenedor-turnos" class="px-6 space-y-3">
+            <p class="text-center font-mono text-sm">Cargando turnos...</p>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-md shadow-sm shadow-black w-96 mb-6">
+        <h3 class="text-center font-mono text-lg font-bold text-slate-800 border-b border-slate-300 pb-2 mb-4">
+            NUEVO TURNO
+        </h3>
+    
+
+        <form id="form-nuevo-turno" class="space-y-4 font-mono text-sm">
+
+        <div>
+            <label class="block text-slate-600 mb-1">Numero de documento</label>
+            <input type="int" id="input-dni"  class="w-full border border-slate-300 rounded p-2 focus:outline-none focus:border-slate-500" placeholder="Ej: 47231803">
+        </div>
+        
+        <div>
+            <label class="block text-slate-600 mb-1">Nombre del Cliente</label>
+            <input type="text" id="input-cliente" required minlength="3" class="w-full border border-slate-300 rounded p-2 focus:outline-none focus:border-slate-500" placeholder="Ej: Matias">
+        </div>
+
+        <div>
+            <label class="block text-slate-600 mb-1">Día de la semana</label>
+            <select id="input-dia" required class="w-full border border-slate-300 rounded p-2 focus:outline-none focus:border-slate-500">
+                <option value="lunes">Lunes</option>
+                <option value="martes">Martes</option>
+                <option value="miercoles">Miércoles</option>
+                <option value="jueves">Jueves</option>
+                <option value="viernes">Viernes</option>
+                <option value="sabado">Sábado</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-slate-600 mb-1">Horario</label>
+            <input type="time" id="input-horario" required class="w-full border border-slate-300 rounded p-2 focus:outline-none focus:border-slate-500">
+        </div>
+
+        <div>
+            <label class="block text-slate-600 mb-1"> Servicios </label>
+            <div class="space-y-1">
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="servicio" value="corte" class="rounded">
+                    <span>Corte</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="servicio" value="barba" class="rounded">
+                    <span>Barba</span>
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="w-full bg-slate-800 text-white font-bold py-2 rounded hover:bg-slate-700 transition-colors">
+            GUARDAR TURNO
+        </button>
+    </form>
+</div>
+
+
+
+
+
+    <script src="main.js"></script>
+</body>
+</html>
