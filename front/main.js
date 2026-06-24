@@ -1,5 +1,9 @@
 const API_URL = 'http://127.0.0.1:8000/turnos';
 const contenedor = document.getElementById('contenedor-turnos');
+const btnBuscar = document.getElementById('buscador-btn');
+const btnVerTodos = document.getElementById('ver-todos-btn');
+
+const formulario = document.getElementById('form-nuevo-turno');
 
 
 async function cargarTurnos() {
@@ -14,7 +18,7 @@ async function cargarTurnos() {
 
         contenedor.innerHTML = '';
 
-    
+
         for (const dia in turnosPorDia) {
             const listaDeTurnos = turnosPorDia[dia];
             
@@ -34,8 +38,6 @@ async function cargarTurnos() {
         contenedor.innerHTML = '<p class="text-center font-mono text-red-800 mt-4">Error de conexión.</p>';
     }
 }
-
-
 
 
 function crearTarjetaTurno(turno) {
@@ -79,10 +81,121 @@ function crearAcordeonDia(dia, tarjetasHTML, cantidad) {
 }
 
 
-cargarTurnos()
 
 
-const formulario = document.getElementById('form-nuevo-turno');
+
+async function eliminarTurno(id) {
+    if (!confirm("¿Estás seguro de eliminar este turno?")) return;
+        try{
+            const respuesta = await fetch(`${API_URL}/${id}`,{
+                method:`DELETE`
+            })
+        if(respuesta.ok){
+            cargarTurnos();
+        }
+        else{
+            alert(`error al elimnar el turno`);
+        }
+        } catch(error){
+            console.error("Error al eliminar el turno",error);
+        }
+    }
+
+function buscar() {
+
+    const input = document.getElementById('input-buscar').value;
+
+    if (!input) {
+        cargarTurnos();
+        return;
+    }
+    else 
+        { 
+        if (input.length>=6){
+            buscarByDni(input)
+            }
+        else{buscarById(input)}
+    }
+}
+
+function limpiarBuscador() {
+
+    document.getElementById('input-buscar-id').value = '';
+
+    cargarTurnos();
+}
+
+
+function crearContenidoBusqueda(turno) {
+    contenedor.innerHTML = `
+                <div class="mb-2 text-center">
+                    <span class="text-xs font-bold text-slate-800 bg-slate-300 px-2 py-1 rounded">
+                        RESULTADO DE BÚSQUEDA
+                    </span>
+                </div>
+                ${crearTarjetaTurno(turno)}
+                `
+                }
+
+
+async function buscarById(id) {
+    try {
+
+        const turno = await busquedaApi(`${API_URL}/id/${id}`);
+        contenedor.innerHTML = '';
+        
+        if (turno) {
+            crearContenidoBusqueda(turno)
+        }
+        else {
+            contenedor.innerHTML =`
+                <p class="text-center font-mono text-red-800 bg-red-200 p-2 rounded">
+                    No existe ningún turno con el ID ${id}.
+                </p>
+            `; }
+        }
+        catch(error){
+            console.log("Error al buscar por ID:", error)
+        }
+    }
+
+async function buscarByDni(dni) {
+    try{
+        const turno = await busquedaApi(`${API_URL}/dni/${dni}`);
+
+        contenedor.innerHTML=``;
+
+        if(turno){
+
+            crearContenidoBusqueda(turno);
+        }
+        else{
+            contenedor.innerHTML =`
+                <p class="text-center font-mono text-red-800 bg-red-200 p-2 rounded">
+                    No existe ningún turno con el DNI: ${dni}.
+                </p>
+            `; }
+        }catch(error){
+            console.log("Error al buscar por DNI:", error);
+        }
+    }
+
+
+async function busquedaApi(url) {
+    try{
+        const resultado = await fetch(url);
+        if(resultado.ok){
+            const turno = await resultado.json();
+
+            return turno;
+            }
+        }
+    catch(error){
+        console.log("error en la api",error);
+        return null;
+        }
+    }
+
 
 formulario.addEventListener('submit', async (evento) => {
 
@@ -134,120 +247,10 @@ formulario.addEventListener('submit', async (evento) => {
 
 
 
-async function eliminarTurno(id) {
-    if (!confirm("¿Estás seguro de eliminar este turno?")) return;
-        try{
-            const respuesta = await fetch(`${API_URL}/${id}`,{
-                method:`DELETE`
-            })
-        if(respuesta.ok){
-            cargarTurnos();
-        }
-        else{
-            alert(`error al elimnar el turno`);
-        }
-        } catch(error){
-            console.error("Error",error);
-        }
-    }
 
 
-function buscar() {
+btnBuscar.addEventListener('click',buscar)
 
-    const input = document.getElementById('input-buscar-id').value;
+btnVerTodos.addEventListener('click',cargarTurnos)
 
-    if (!input) {
-        cargarTurnos();
-        return;
-    }
-    else 
-        { 
-        if (input.length>=6){
-            buscarByDni(input)
-            }
-        else{buscarById(input)}
-    }
-}
-
-function limpiarBuscador() {
-
-    document.getElementById('input-buscar-id').value = '';
-
-    cargarTurnos();
-}
-
-
-
-function crearContenidoBusqueda(turno) {
-    contenedor.innerHTML = `
-                <div class="mb-2 text-center">
-                    <span class="text-xs font-bold text-slate-800 bg-slate-300 px-2 py-1 rounded">
-                        RESULTADO DE BÚSQUEDA
-                    </span>
-                </div>
-                ${crearTarjetaTurno(turno)}
-                `
-                }
-
-
-
-async function buscarById(id) {
-    try {
-
-        const turno = await busquedaApi(`${API_URL}/id/${id}`);
-        contenedor.innerHTML = '';
-        
-        if (turno) {
-            crearContenidoBusqueda(turno)
-        }
-        else {
-            contenedor.innerHTML =`
-                <p class="text-center font-mono text-red-800 bg-red-200 p-2 rounded">
-                    No existe ningún turno con el ID ${id}.
-                </p>
-            `; }
-        }
-        catch(error){
-            console.log("Error al buscar por ID:", error)
-        }
-    }
-
-
-async function buscarByDni(dni) {
-    try{
-        const turno = await busquedaApi(`${API_URL}/dni/${dni}`);
-
-        contenedor.innerHTML=``;
-
-        if(turno){
-
-            crearContenidoBusqueda(turno);
-        }
-        else{
-            contenedor.innerHTML =`
-                <p class="text-center font-mono text-red-800 bg-red-200 p-2 rounded">
-                    No existe ningún turno con el DNI: ${dni}.
-                </p>
-            `; }
-        }catch(error){
-            console.log("Error al buscar por DNI:", error);
-        }
-    }
-
-
-
-async function busquedaApi(url) {
-    try{
-        const resultado = await fetch(url);
-        if(resultado.ok){
-            const turno = await resultado.json();
-
-            return turno;
-            }
-        }
-    catch(error){
-        console.log("error en la api",error);
-        return null;
-        }
-    }
-
+cargarTurnos()
